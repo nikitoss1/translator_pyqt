@@ -1,5 +1,5 @@
 import unittest
-from model.user_translate import UserTranslate
+from model.model_translate import UserTranslate
 
 class TestUserTranslate(unittest.TestCase):
 
@@ -33,6 +33,13 @@ class TestUserTranslate(unittest.TestCase):
     
     def test_detected_lang_de(self):
         target_lang = 'de'
-        text = 'Hallo, ich heiße John.!'
+        text = 'Hallo, ich heiße John!'
         result = self.translator.detected_language(text)
         self.assertEqual(target_lang, result.lang)
+
+
+    def test_russian_to_russian(self):
+        target_lang = 'ru'
+        text = 'Привет, меня зовут Джон!'
+        result = self.translator.translate_text(text, target_lang=target_lang)
+        self.assertEqual(result['translate'].text, text)

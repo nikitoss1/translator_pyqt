@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QComboBox, QMessageBox, QPushButton, QLabel, QTextBrowser, QVBoxLayout, QHBoxLayout, QTextEdit
 from PyQt6.QtGui import QIcon
+from PyQt6.QtCore import Qt
 from config.config import SIZE_OF_WINDOW, LANGUAGES
 
 
@@ -39,9 +40,10 @@ class ViewTranslate(QMainWindow):
         # Добавить слушателей для этих виджетов
         # Как задать максимальный размер списка
         self.language_combo_source = QComboBox()
-        self.language_combo_source.addItems([*LANGUAGES.values()])
+        self.language_combo_source.addItems([*LANGUAGES.keys()])
+
         self.language_combo_target = QComboBox()
-        self.language_combo_target.addItems([*LANGUAGES.values()])
+        self.language_combo_target.addItems([*LANGUAGES.keys()])
 
 
     def createLayouts(self):
@@ -69,14 +71,38 @@ class ViewTranslate(QMainWindow):
 
 
     # Код ниже для примера
-    # def connectSignals(self):
-    #     """Подключение сигналов и слотов."""
-    #     self.button.clicked.connect(self.onButtonClicked)
+    def connectSignals(self, presenter):
+        """Подключение сигналов и слотов."""
+        self.button_switch.clicked.connect(self.switch_languages)
+        self.button_translate.clicked.connect(presenter.translate_text)
 
-    # def onButtonClicked(self):
-    #     """Обработчик нажатия кнопки."""
-    #     self.label.setText("Кнопка нажата!")
-    #     QMessageBox.information(self, "Сообщение", "Вы нажали кнопку!")
+    
+    def switch_languages(self):
+        current_source = self.language_combo_source.currentText()
+        current_target = self.language_combo_target.currentText()
+
+        self.language_combo_source.setCurrentText(current_target)
+        self.language_combo_target.setCurrentText(current_source)
+
+        temp = self.text_field_source.toPlainText()
+        self.text_field_source.setText(self.text_field_target.toPlainText())
+        self.text_field_target.setText(temp)
+
+
+    def current_source_lang(self):
+        return self.language_combo_source.currentText()
+    
+
+    def current_target_lang(self):
+        return self.language_combo_target.currentText()
+
+
+    def current_text(self):
+        return self.text_field_source.toPlainText()
+    
+
+    def write_translate_in_browser(self, text):
+        self.text_field_target.setText(text)
 
 
 if __name__ == "__main__":

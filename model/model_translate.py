@@ -1,7 +1,7 @@
 from googletrans import Translator
 
 
-class UserTranslate:
+class ModelTranslate:
 
     def __init__(self):
         self.__translator = Translator()
@@ -27,5 +27,5 @@ class UserTranslate:
 
 
 if __name__ == '__main__':
-    o = UserTranslate()
+    o = ModelTranslate()
     print(o.translate_text('Hello', 'ru')['translate'].text)
