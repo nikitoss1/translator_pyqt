@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QComboBox, QMess
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import Qt
 from config.config import SIZE_OF_WINDOW, LANGUAGES
-
+from view.styles.styles import BUTTON_STYLE, TEXT_BROWSER_STYLE, COMBO_BOX_STYLE, TEXT_EDIT_STYLE, BACKGROUND_COLOR
 
 class ViewTranslate(QMainWindow):
 
@@ -18,6 +18,7 @@ class ViewTranslate(QMainWindow):
 
         self.createWidgets()
         self.createLayouts()
+        self.setStyles()
         #self.connectSignals()
 
     
@@ -30,20 +31,23 @@ class ViewTranslate(QMainWindow):
                 background-color: #9788B6;
             }
         ''')
+        self.button_switch.setCursor(Qt.CursorShape.PointingHandCursor)
+        
         self.button_translate = QPushButton('Перевести')
-
+        self.button_translate.setCursor(Qt.CursorShape.PointingHandCursor)
+        
         self.text_field_source = QTextEdit()
         self.text_field_source.setPlaceholderText('Введите ваш текст')
         self.text_field_target = QTextBrowser()
         self.text_field_target.setPlaceholderText('Ваш перевод')
 
-        # Добавить слушателей для этих виджетов
-        # Как задать максимальный размер списка
         self.language_combo_source = QComboBox()
         self.language_combo_source.addItems([*LANGUAGES.keys()])
+        self.language_combo_source.setCursor(Qt.CursorShape.PointingHandCursor)
 
         self.language_combo_target = QComboBox()
         self.language_combo_target.addItems([*LANGUAGES.keys()])
+        self.language_combo_target.setCursor(Qt.CursorShape.PointingHandCursor)
 
 
     def createLayouts(self):
@@ -87,6 +91,15 @@ class ViewTranslate(QMainWindow):
         temp = self.text_field_source.toPlainText()
         self.text_field_source.setText(self.text_field_target.toPlainText())
         self.text_field_target.setText(temp)
+
+    
+    def setStyles(self):
+        self.text_field_source.setStyleSheet(TEXT_EDIT_STYLE)
+        self.text_field_target.setStyleSheet(TEXT_BROWSER_STYLE)
+        self.language_combo_source.setStyleSheet(COMBO_BOX_STYLE)
+        self.language_combo_target.setStyleSheet(COMBO_BOX_STYLE)
+        self.button_translate.setStyleSheet(BUTTON_STYLE)
+        self.setStyleSheet(BACKGROUND_COLOR)
 
 
     def current_source_lang(self):

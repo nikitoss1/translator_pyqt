@@ -28,4 +28,3 @@ class ModelTranslate:
 
 if __name__ == '__main__':
     o = ModelTranslate()
-    print(o.translate_text('Hello', 'ru')['translate'].text)
