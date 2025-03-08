@@ -14,6 +14,8 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QTextCursor
+import json
+import os
 from config.constants import SIZE_OF_WINDOW, LANGUAGES_SOURCE, LANGUAGES_TARGET
 from view.styles.styles import (
     BUTTON_STYLE,
@@ -26,10 +28,18 @@ from config.condition import Condition
 
 
 class ViewTranslate(QMainWindow):
-
     def __init__(self):
         super().__init__()
+
+        # Инициализация переменных
+        self.source_lang = list(LANGUAGES_SOURCE.keys())[0]
+        self.target_lang = list(LANGUAGES_TARGET.keys())[0]
+
+        self.text_from_text_edit = ''
+        self.text_from_text_browser = ''
+
         self.initUI()
+        self.load_data() 
 
     def initUI(self):
         self.setWindowTitle("Translator")
@@ -39,7 +49,6 @@ class ViewTranslate(QMainWindow):
         self.createWidgets()
         self.createLayouts()
         self.setStyles()
-        # self.connectSignals()
 
     def createWidgets(self):
         self.button_switch = QPushButton()
@@ -89,7 +98,23 @@ class ViewTranslate(QMainWindow):
         """Подключение сигналов и слотов."""
         self.presenter = presenter
         self.button_switch.clicked.connect(self.switch_languages)
+        self.text_field_source.textChanged.connect(self.on_text_source_changed)
+        self.text_field_target.textChanged.connect(self.on_text_target_changed)
+        self.language_combo_source.currentTextChanged.connect(self.current_item_source)
+        self.language_combo_target.currentTextChanged.connect(self.current_item_target)
         self.button_translate.clicked.connect(self.translate_text)
+
+    def current_item_source(self, text):
+        self.source_lang = text
+
+    def current_item_target(self, text):
+        self.target_lang = text 
+
+    def on_text_source_changed(self):
+        self.text_from_text_edit = self.text_field_source.toPlainText()
+
+    def on_text_target_changed(self):
+        self.text_from_text_browser = self.text_field_target.toPlainText()
 
     def translate_text(self):
         if not self.text_field_source.toPlainText().strip():
@@ -148,13 +173,50 @@ class ViewTranslate(QMainWindow):
         msg.setWindowFlags(Qt.WindowType.Dialog)
         msg.exec()
 
+    def get_data_to_save(self):
+        return {
+            "source_lang": self.source_lang,  # Сохраняем текущий выбранный язык
+            "target_lang": self.target_lang,  # Сохраняем текущий выбранный язык
+            "text_from_text_edit": self.text_from_text_edit,
+            "text_from_text_browser": self.text_from_text_browser,
+        }
+
+    def save_data(self):
+        data = self.get_data_to_save()  # Получаем данные для сохранения
+        with open("save_data/data.json", "w", encoding="utf-8") as file:
+            json.dump(data, file, indent=4, ensure_ascii=False)  # Сохраняем в JSON
+
+    def load_data(self):
+        if os.path.exists("save_data/data.json"):  # Проверяем, существует ли файл
+            with open("save_data/data.json", "r", encoding="utf-8") as file:
+                data = json.load(file)  # Загружаем данные из JSON
+
+            # Восстанавливаем данные
+            self.source_lang = data.get("source_lang", list(LANGUAGES_SOURCE.keys())[0])
+            self.target_lang = data.get("target_lang", list(LANGUAGES_TARGET.keys())[0])
+            self.text_from_text_edit = data.get("text_from_text_edit", "")
+            self.text_from_text_browser = data.get("text_from_text_browser", "")
+
+            # Обновляем виджеты
+            self.text_field_source.setText(self.text_from_text_edit)
+            self.text_field_target.setText(self.text_from_text_browser)
+
+            # Устанавливаем выбранные языки в QComboBox
+            self.language_combo_source.setCurrentText(self.source_lang)
+            self.language_combo_target.setCurrentText(self.target_lang)
+
+    def closeEvent(self, event):
+        self.save_data()
+        event.accept()
+
+
 class PlainTextEdit(QTextEdit):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def insertFromMimeData(self, source):
         if source.hasText():
-            plain_text = source.text() 
+            plain_text = source.text()
             cursor = self.textCursor()
             cursor.insertText(plain_text)
 
