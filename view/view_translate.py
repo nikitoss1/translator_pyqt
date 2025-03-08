@@ -26,6 +26,7 @@ from view.styles.styles import (
     BACKGROUND_COLOR,
 )
 from config.condition import Condition
+from view.plain_text_edit import PlainTextEdit
 
 
 class ViewTranslate(QMainWindow):
@@ -218,17 +219,6 @@ class ViewTranslate(QMainWindow):
     def closeEvent(self, event):
         self.save_data()
         event.accept()
-
-
-class PlainTextEdit(QTextEdit):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def insertFromMimeData(self, source):
-        if source.hasText():
-            plain_text = source.text()
-            cursor = self.textCursor()
-            cursor.insertText(plain_text)
 
 
 if __name__ == "__main__":
