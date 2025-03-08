@@ -1,6 +1,6 @@
 {
-    "source_lang": "русский",
+    "source_lang": "автоматически",
     "target_lang": "английский",
-    "text_from_text_edit": "привет",
-    "text_from_text_browser": "Hello"
+    "text_from_text_edit": "Как дела",
+    "text_from_text_browser": "How are you"
 }
