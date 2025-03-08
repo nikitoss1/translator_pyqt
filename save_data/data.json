@@ -1,6 +1,6 @@
 {
-    "source_lang": "английский",
-    "target_lang": "русский",
-    "text_from_text_edit": "How are you?",
-    "text_from_text_browser": "Как вы?"
+    "source_lang": "русский",
+    "target_lang": "английский",
+    "text_from_text_edit": "Хорошо",
+    "text_from_text_browser": "Ok"
 }

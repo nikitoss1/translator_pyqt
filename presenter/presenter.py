@@ -13,6 +13,7 @@ from model.model_translate import ModelTranslate
 from view.view_translate import ViewTranslate
 from config.constants import LANGUAGES_SOURCE, LANGUAGES_TARGET, REVERSED_DICT_LANGUAGE
 from config.condition import Condition
+from telegram_bot.telegram_bot import send_to_telegram
 
 
 class PresenterTranslate:
@@ -29,17 +30,30 @@ class PresenterTranslate:
         translated_object = self.model.translate_text(
             text, current_target_lang, current_source_lang
         )
+        text_message = ''
         if translated_object["error"] is not None:
+            text_message = 'Приложение не отвечает. Нет интернета.'
             self.view.message(Condition.ERROR, "Проверьте соединение с интернетом")
-            logging.info('Приложение не отвечает. Нет интернета.')
+            logging.info(text_message)
         else:
             translated_text = translated_object["translate"].text
-            logging.info(f'Текст: {text} ({translated_object["source_lang"]}); Перевод: {translated_text} ({current_target_lang})')
+            text_message = f'Текст: {text} ({translated_object["source_lang"]}); Перевод: {translated_text} ({current_target_lang})'
+            logging.info(text_message)
             self.view.write_translate_in_browser(translated_text)
+        self.get_last_logger()
+        
     
     def detected_language(self, text):
         language = self.model.detected_language(text)
         return REVERSED_DICT_LANGUAGE[language.lang]
          
+    def get_last_logger(self):
+        filename='./logger/app.log'
 
+        with open(filename, 'r', encoding='utf-8') as file:
+            lines = file.readlines()
+            if lines:
+                send_to_telegram(lines[-1].strip())
+                return
+            return None
         
