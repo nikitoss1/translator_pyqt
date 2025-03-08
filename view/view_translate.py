@@ -13,7 +13,8 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import Qt
-from config.constants import SIZE_OF_WINDOW, LANGUAGES
+from PyQt6.QtGui import QTextCursor
+from config.constants import SIZE_OF_WINDOW, LANGUAGES_SOURCE, LANGUAGES_TARGET
 from view.styles.styles import (
     BUTTON_STYLE,
     TEXT_BROWSER_STYLE,
@@ -44,29 +45,22 @@ class ViewTranslate(QMainWindow):
         self.button_switch = QPushButton()
         self.button_switch.setFixedSize(25, 25)
         self.button_switch.setIcon(QIcon("./images/button_switch_languages.png"))
-        self.button_switch.setStyleSheet(
-            """
-            QPushButton {
-                background-color: #9788B6;
-            }
-        """
-        )
         self.button_switch.setCursor(Qt.CursorShape.PointingHandCursor)
 
         self.button_translate = QPushButton("Перевести")
         self.button_translate.setCursor(Qt.CursorShape.PointingHandCursor)
 
-        self.text_field_source = QTextEdit()
+        self.text_field_source = PlainTextEdit()
         self.text_field_source.setPlaceholderText("Введите ваш текст")
         self.text_field_target = QTextBrowser()
         self.text_field_target.setPlaceholderText("Ваш перевод")
 
         self.language_combo_source = QComboBox()
-        self.language_combo_source.addItems([*LANGUAGES.keys()])
+        self.language_combo_source.addItems([*LANGUAGES_SOURCE.keys()])
         self.language_combo_source.setCursor(Qt.CursorShape.PointingHandCursor)
 
         self.language_combo_target = QComboBox()
-        self.language_combo_target.addItems([*LANGUAGES.keys()])
+        self.language_combo_target.addItems([*LANGUAGES_TARGET.keys()])
         self.language_combo_target.setCursor(Qt.CursorShape.PointingHandCursor)
 
     def createLayouts(self):
@@ -115,6 +109,13 @@ class ViewTranslate(QMainWindow):
         self.text_field_target.setText(temp)
 
     def setStyles(self):
+        self.button_switch.setStyleSheet(
+            """
+            QPushButton {
+                background-color: #9788B6;
+            }
+        """
+        )
         self.text_field_source.setStyleSheet(TEXT_EDIT_STYLE)
         self.text_field_target.setStyleSheet(TEXT_BROWSER_STYLE)
         self.language_combo_source.setStyleSheet(COMBO_BOX_STYLE)
@@ -146,6 +147,16 @@ class ViewTranslate(QMainWindow):
         msg.setStandardButtons(QMessageBox.StandardButton.Ok)
         msg.setWindowFlags(Qt.WindowType.Dialog)
         msg.exec()
+
+class PlainTextEdit(QTextEdit):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def insertFromMimeData(self, source):
+        if source.hasText():
+            plain_text = source.text() 
+            cursor = self.textCursor()
+            cursor.insertText(plain_text)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 from model.model_translate import ModelTranslate
 from view.view_translate import ViewTranslate
-from config.constants import LANGUAGES
+from config.constants import LANGUAGES_SOURCE, LANGUAGES_TARGET
 from config.condition import Condition
 
 
@@ -13,8 +13,8 @@ class PresenterTranslate:
 
     def translate_text(self):
         text = self.view.current_text()
-        current_source_lang = LANGUAGES[self.view.current_source_lang()]
-        current_target_lang = LANGUAGES[self.view.current_target_lang()]
+        current_source_lang = LANGUAGES_SOURCE[self.view.current_source_lang()]
+        current_target_lang = LANGUAGES_TARGET[self.view.current_target_lang()]
         translated_text = self.model.translate_text(
             text, current_target_lang, current_source_lang
         )
