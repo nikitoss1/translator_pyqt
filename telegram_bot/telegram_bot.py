@@ -5,13 +5,9 @@ logging.basicConfig(
     filename='./logger/app.log',
     filemode='a'
 )
-
 from telegram import Bot
 from telegram.error import TelegramError
-
-TOKEN = ''
-
-CHAT_ID = ''
+from tokens.tokens import TOKEN, CHAT_ID
 
 bot = Bot(token=TOKEN)
 

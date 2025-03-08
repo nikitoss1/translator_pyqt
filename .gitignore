@@ -24,3 +24,6 @@ venv/
 
 # Игнорировать tokens
 tokens/
+
+# Игнорировать example
+example.py
