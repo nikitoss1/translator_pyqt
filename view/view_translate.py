@@ -124,8 +124,17 @@ class ViewTranslate(QMainWindow):
 
     def switch_languages(self):
         current_source = self.language_combo_source.currentText()
-        current_target = self.language_combo_target.currentText()
+        if current_source == 'автоматически' and not self.text_field_source.toPlainText().strip():
+            self.message(Condition.NOTIFICATION, 'Введите текст в поле') 
+            return
+        
+        if current_source == 'автоматически':
+            lang = self.presenter.detected_language(self.text_field_source.toPlainText())
+            self.language_combo_source.setCurrentText(lang)
+            current_source = self.language_combo_source.currentText()
 
+        current_target = self.language_combo_target.currentText()
+        
         self.language_combo_source.setCurrentText(current_target)
         self.language_combo_target.setCurrentText(current_source)
 

@@ -11,7 +11,7 @@ logging.info("Логирование запущено")
 
 from model.model_translate import ModelTranslate
 from view.view_translate import ViewTranslate
-from config.constants import LANGUAGES_SOURCE, LANGUAGES_TARGET
+from config.constants import LANGUAGES_SOURCE, LANGUAGES_TARGET, REVERSED_DICT_LANGUAGE
 from config.condition import Condition
 
 
@@ -36,3 +36,10 @@ class PresenterTranslate:
             translated_text = translated_object["translate"].text
             logging.info(f'Текст: {text} ({translated_object["source_lang"]}); Перевод: {translated_text} ({current_target_lang})')
             self.view.write_translate_in_browser(translated_text)
+    
+    def detected_language(self, text):
+        language = self.model.detected_language(text)
+        return REVERSED_DICT_LANGUAGE[language.lang]
+         
+
+        
