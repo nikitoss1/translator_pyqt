@@ -17,6 +17,7 @@ class ModelTranslate:
                 "translate": translated_text,
                 "source_lang": translated_text.src,
                 "target_lang": translated_text.dest,
+                'error': None
             }
         except Exception as e:
             return {"message": "Произошла ошибка при переводе текста", "error": str(e)}
